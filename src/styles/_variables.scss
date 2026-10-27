@@ -1,0 +1,50 @@
+// ==========================================================================
+// 1. DESIGN TOKENS & CSS VARIABLES (Lando Norris Kinetic Energy x Agri Luxury)
+// ==========================================================================
+
+:root {
+  // Core Earth & Forest Palette
+  --bg-obsidian: #08100c;
+  --bg-forest-deep: #0d1a13;
+  --bg-surface: #12231a;
+  --bg-surface-elevated: #172d21;
+  --bg-glass: rgba(18, 35, 26, 0.72);
+
+  // Harvest Wheat Golds & Botanical Accents
+  --gold-primary: #d4a843;
+  --gold-bright: #f5d076;
+  --gold-deep: #9b731e;
+  --gold-glow: rgba(212, 168, 67, 0.24);
+  --lime-accent: #b5e550;
+
+  // Breathable Off-Whites & Text Hierarchy
+  --text-linen: #f7f4eb;
+  --text-secondary: #b9c7be;
+  --text-muted: #7e9286;
+  --text-dark: #09120d;
+
+  // Borders & Dividers
+  --border-subtle: rgba(247, 244, 235, 0.09);
+  --border-gold: rgba(212, 168, 67, 0.35);
+
+  // Typography Stacks (Balanced Proportions — No Clipping)
+  --font-display: 'Playfair Display', 'Manrope', Georgia, serif;
+  --font-serif: 'Playfair Display', 'Noto Serif Devanagari', Georgia, serif;
+  --font-sans: 'Manrope', 'Mukta', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-hindi-display: 'Noto Serif Devanagari', 'Mukta', serif;
+  --font-hindi-sans: 'Mukta', 'Manrope', sans-serif;
+
+  // Layout & Transitions
+  --container-max: 1360px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-pill: 9999px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+// Automatic Typography Override when Hindi (Devanagari) is active
+html[data-lang='hi'] {
+  --font-display: 'Noto Serif Devanagari', 'Mukta', serif;
+  --font-sans: 'Mukta', 'Manrope', sans-serif;
+}

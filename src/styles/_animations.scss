@@ -1,0 +1,111 @@
+// ==========================================================================
+// 3. KEYFRAMES, DEVANAGARI MAATRA PROTECTION & ANIMATION UTILITIES
+// ==========================================================================
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-33.333%, 0, 0);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(181, 229, 80, 0.75);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 9px rgba(181, 229, 80, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(181, 229, 80, 0);
+  }
+}
+
+// Staggered Split-Word Reveal Containers
+// Generous vertical padding ensures Hindi Devanagari upper & lower maatras (े, ै, ी, ु, ू, ृ, ं) are never clipped
+.split-line {
+  display: block;
+  overflow: visible;
+  line-height: inherit;
+}
+
+.split-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-top: 0.24em;
+  padding-bottom: 0.22em;
+  padding-right: 0.06em;
+  margin-top: -0.18em;
+  margin-bottom: -0.14em;
+}
+
+.split-word {
+  display: inline-block;
+  will-change: transform, opacity;
+  line-height: 1.25;
+}
+
+// Gold Gradient Text Utility (with vertical & horizontal breathing room for Hindi maatras and trailing glyphs)
+.text-gradient-gold {
+  display: inline-block;
+  padding: 0.14em 0.1em;
+  margin: -0.1em 0;
+  line-height: 1.32;
+  background: linear-gradient(125deg, #fff3c4 0%, #e0b44c 48%, #b68421 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.icon-gold {
+  color: var(--gold-primary);
+  flex-shrink: 0;
+}
+
+// Global Hindi Devanagari Typography Safeguards (prevents broken shirorekha & clipped maatras)
+html[data-lang='hi'] {
+  h1,
+  h2,
+  h3,
+  h4,
+  .hero-section__headline,
+  .seeds-section__headline,
+  .pillars-section__title,
+  .gallery-section__title,
+  .site-footer__display,
+  .bento-flagship__name,
+  .variety-card__name {
+    line-height: 1.38 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .split-word {
+    line-height: 1.38 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .section-tag,
+  .hero-section__eyebrow,
+  .seeds-section__live-badge,
+  .badge-pill,
+  .variety-card__badge,
+  .footer-card__label,
+  .hero-marquee__track,
+  .site-nav__brand-name,
+  .site-nav__brand-sub {
+    letter-spacing: 0.02em !important;
+    line-height: 1.45 !important;
+  }
+
+  p,
+  li,
+  span {
+    line-height: 1.65;
+  }
+}

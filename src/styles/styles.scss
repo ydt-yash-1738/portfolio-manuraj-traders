@@ -1,0 +1,2058 @@
+@use './variables' as *;
+@use './mixins' as *;
+@use './animations' as *;
+
+// ==========================================================================
+// 4. GLOBAL RESET, LENIS SMOOTH SCROLL & BASE TYPOGRAPHY
+// ==========================================================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html {
+  background-color: var(--bg-obsidian);
+  color: var(--text-linen);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--bg-obsidian);
+  color: var(--text-linen);
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+::selection {
+  background: var(--gold-primary);
+  color: var(--text-dark);
+}
+
+picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3.25rem);
+}
+
+// Subtle Editorial Film Grain Overlay
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.7) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+// Section Tag Pill
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-pill);
+  background: rgba(212, 168, 67, 0.11);
+  border: 1px solid rgba(212, 168, 67, 0.3);
+  color: var(--gold-bright);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  max-width: 100%;
+
+  @include respond-to(sm) {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 12px;
+    white-space: normal;
+    text-align: left;
+  }
+}
+
+// ==========================================================================
+// 5. MAGNETIC BUTTONS (Lando Norris Liquid Fill & Elastic Pull)
+// ==========================================================================
+
+.magnetic-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.92rem 1.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 0.35s var(--ease-out-expo),
+    box-shadow 0.35s var(--ease-out-expo),
+    color 0.35s var(--ease-out-expo);
+
+  @include respond-to(sm) {
+    padding: 0.85rem 1.4rem;
+    font-size: 0.88rem;
+  }
+
+  &__fill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--text-linen);
+    transform: translateY(102%);
+    border-radius: inherit;
+    transition: transform 0.48s var(--ease-out-expo);
+  }
+
+  &__content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  &:hover .magnetic-btn__fill {
+    transform: translateY(0%);
+  }
+
+  &--primary,
+  &--gold {
+    background: linear-gradient(135deg, #e7be5a 0%, #c49228 100%);
+    color: var(--text-dark);
+    box-shadow: 0 12px 30px -8px rgba(212, 168, 67, 0.45);
+
+    &:hover {
+      color: var(--text-dark);
+      box-shadow: 0 16px 36px -6px rgba(247, 244, 235, 0.35);
+    }
+  }
+
+  &--outline {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-linen);
+    border: 1px solid rgba(247, 244, 235, 0.22);
+
+    &:hover {
+      color: var(--text-dark);
+      border-color: var(--text-linen);
+    }
+  }
+}
+
+// ==========================================================================
+// 6. STICKY NAVIGATION & BILINGUAL LANGUAGE TOGGLE
+// ==========================================================================
+
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+  transition: padding 0.35s var(--ease-out-expo),
+    background 0.35s var(--ease-out-expo),
+    border-color 0.35s var(--ease-out-expo);
+
+  &--scrolled {
+    padding: 0.7rem 0;
+    @include glass-panel(rgba(8, 16, 12, 0.88), 20px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  &__crest {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, rgba(212, 168, 67, 0.22), rgba(212, 168, 67, 0.05));
+    border: 1px solid var(--border-gold);
+    color: var(--gold-bright);
+    flex-shrink: 0;
+
+    @include respond-to(sm) {
+      width: 34px;
+      height: 34px;
+    }
+  }
+
+  &__brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__brand-name {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: clamp(0.92rem, 2.2vw, 1.08rem);
+    letter-spacing: 0.05em;
+    color: var(--text-linen);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__brand-sub {
+    font-size: clamp(0.58rem, 1.5vw, 0.68rem);
+    letter-spacing: 0.09em;
+    color: var(--gold-primary);
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.45rem 1.3rem;
+    border-radius: var(--radius-pill);
+    background: rgba(18, 35, 26, 0.55);
+    border: 1px solid var(--border-subtle);
+
+    @include respond-to(lg) {
+      display: none;
+    }
+  }
+
+  &__link {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: color 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    line-height: 1.4;
+
+    span {
+      font-size: 0.68rem;
+      color: var(--gold-primary);
+      opacity: 0.8;
+      font-weight: 700;
+    }
+
+    &:hover,
+    &--highlight {
+      color: var(--text-linen);
+    }
+
+    &--highlight {
+      color: var(--gold-bright);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+  }
+
+  &__cta {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.82rem;
+
+    @include respond-to(md) {
+      display: none;
+    }
+  }
+}
+
+// Sticky Bilingual Switch Pill
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.45rem 0.3rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: rgba(19, 38, 28, 0.92);
+  border: 1px solid var(--border-gold);
+  color: var(--text-linen);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    box-shadow: 0 0 22px rgba(212, 168, 67, 0.28);
+  }
+
+  &__icon {
+    color: var(--gold-bright);
+    flex-shrink: 0;
+  }
+
+  &__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    background: rgba(8, 16, 12, 0.78);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+    min-width: 72px;
+  }
+
+  &__option {
+    position: relative;
+    z-index: 2;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-align: center;
+    padding: 0.22rem 0.42rem;
+    line-height: 1.35;
+    color: var(--text-secondary);
+    transition: color 0.25s ease;
+
+    &.is-active {
+      color: var(--text-dark);
+    }
+  }
+
+  &__thumb {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    width: calc(50% - 4px);
+    border-radius: var(--radius-pill);
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold-primary));
+    z-index: 1;
+  }
+}
+
+// ==========================================================================
+// 7. HERO SECTION & INTEGRATED SHOWCASE STRIP
+// ==========================================================================
+
+.hero-section {
+  position: relative;
+  padding-top: clamp(6rem, 10vw, 8.75rem);
+  padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  overflow: hidden;
+
+  &__ambient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(130px);
+
+    &--gold {
+      width: 520px;
+      height: 520px;
+      top: -120px;
+      right: 8%;
+      background: rgba(212, 168, 67, 0.16);
+    }
+
+    &--emerald {
+      width: 620px;
+      height: 620px;
+      top: 18%;
+      left: -140px;
+      background: rgba(34, 97, 58, 0.26);
+    }
+  }
+
+  &__grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+        to right,
+        rgba(247, 244, 235, 0.03) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(247, 244, 235, 0.03) 1px, transparent 1px);
+    background-size: 90px 90px;
+    mask-image: radial-gradient(circle at 50% 35%, black 30%, transparent 80%);
+  }
+
+  &__main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 410px;
+    gap: clamp(2rem, 4vw, 3.75rem);
+    align-items: center;
+
+    @include respond-to(lg) {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  &__content {
+    min-width: 0;
+
+    @include respond-to(lg) {
+      order: 2;
+    }
+  }
+
+  &__visual {
+    width: 100%;
+    max-width: 410px;
+    justify-self: end;
+
+    @include respond-to(lg) {
+      order: 1;
+      justify-self: center;
+      max-width: 420px;
+    }
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: var(--radius-pill);
+    background: rgba(18, 35, 26, 0.88);
+    border: 1px solid var(--border-gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    line-height: 1.4;
+    color: var(--gold-bright);
+    margin-bottom: 1.15rem;
+    max-width: 100%;
+
+    @include respond-to(sm) {
+      border-radius: 12px;
+      font-size: 0.68rem;
+      padding: 0.4rem 0.75rem;
+    }
+  }
+
+  &__pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lime-accent);
+    animation: pulseRing 2s infinite;
+    flex-shrink: 0;
+  }
+
+  &__identity-pill {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.6rem;
+    margin-bottom: 1.1rem;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.5;
+
+    @include respond-to(sm) {
+      font-size: 0.84rem;
+    }
+  }
+
+  &__divider {
+    @include respond-to(sm) {
+      display: none;
+    }
+  }
+
+  &__greeting {
+    color: var(--text-linen);
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &__shop-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.68rem;
+    border-radius: var(--radius-pill);
+    background: rgba(212, 168, 67, 0.14);
+    border: 1px solid rgba(212, 168, 67, 0.32);
+    color: var(--gold-bright);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  &__location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    color: var(--gold-primary);
+    padding: 0.18rem 0.55rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+
+    &:hover {
+      color: var(--gold-bright);
+      background: rgba(212, 168, 67, 0.14);
+      border-color: rgba(212, 168, 67, 0.35);
+      text-decoration: underline;
+    }
+  }
+
+  &__headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2.1rem, 4.3vw, 4.1rem);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.35rem;
+    overflow-wrap: break-word;
+
+    &--gold .split-word {
+      background: linear-gradient(125deg, #fff3c4 0%, #e4b74d 50%, #b5821f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-style: italic;
+      padding: 0.08em 0.1em;
+    }
+  }
+
+  &__subtitle {
+    font-size: clamp(0.95rem, 1.15vw, 1.12rem);
+    color: var(--text-secondary);
+    max-width: 60ch;
+    margin-bottom: 1.9rem;
+    line-height: 1.75;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-bottom: 2.4rem;
+
+    @include respond-to(sm) {
+      flex-direction: column;
+
+      .magnetic-btn {
+        width: 100%;
+      }
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 1.65rem;
+    border-top: 1px solid var(--border-subtle);
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.15rem;
+    }
+  }
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+
+  &__value {
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 800;
+    color: var(--gold-bright);
+    line-height: 1.28;
+    overflow-wrap: break-word;
+  }
+
+  &__label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-linen);
+    line-height: 1.4;
+  }
+
+  &__detail {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+}
+
+// Right Column Hero Portrait — Full-Sized & Responsive on Mobile
+.hero-portrait {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  padding: 10px;
+  background: linear-gradient(
+    155deg,
+    rgba(212, 168, 67, 0.5) 0%,
+    rgba(18, 35, 26, 0.45) 55%,
+    rgba(212, 168, 67, 0.25) 100%
+  );
+  box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.78);
+
+  &__frame {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-forest-deep);
+
+    @include respond-to(sm) {
+      height: 410px;
+    }
+  }
+
+  &__picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    @include cinematic-photo-grade;
+  }
+
+  &__vignette {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(8, 16, 12, 0.95) 0%,
+      rgba(8, 16, 12, 0.3) 42%,
+      transparent 72%
+    );
+  }
+
+  &__nameplate {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    right: 18px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    @include glass-panel(rgba(10, 20, 15, 0.9), 16px);
+    border: 1px solid rgba(212, 168, 67, 0.36);
+
+    @include respond-to(sm) {
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      padding: 0.75rem 0.9rem;
+    }
+
+    h3 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.05rem, 2.5vw, 1.22rem);
+      color: var(--text-linen);
+      margin: 0.15rem 0;
+      line-height: 1.35;
+    }
+
+    p {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+  }
+
+  &__nameplate-left {
+    min-width: 0;
+  }
+
+  &__tag {
+    display: block;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--gold-bright);
+    line-height: 1.4;
+  }
+
+  &__seal {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(212, 168, 67, 0.16);
+    border: 1px solid var(--border-gold);
+    color: var(--gold-bright);
+    flex-shrink: 0;
+  }
+}
+
+// Kinetic Lando-Style Ticker Ribbon
+.hero-marquee {
+  margin: clamp(2.8rem, 5.5vw, 4.8rem) 0;
+  padding: 1rem 0;
+  background: linear-gradient(90deg, #12251b 0%, #193224 50%, #12251b 100%);
+  border-top: 1px solid var(--border-gold);
+  border-bottom: 1px solid var(--border-gold);
+  overflow: hidden;
+  white-space: nowrap;
+
+  &__track {
+    display: inline-block;
+    animation: marqueeScroll 28s linear infinite;
+    font-family: var(--font-serif);
+    font-size: clamp(0.92rem, 1.4vw, 1.15rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.5;
+    color: var(--gold-bright);
+  }
+}
+
+// Hero Integrated Impact Strip
+.hero-showcase {
+  padding-top: 0.5rem;
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.25rem;
+
+    @include respond-to(md) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+  }
+
+  &__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3.2vw, 2.65rem);
+    margin-top: 0.65rem;
+    line-height: 1.28;
+  }
+
+  &__subtitle {
+    max-width: 48ch;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+  }
+
+  &__card {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    grid-column: span 4;
+
+    &--1,
+    &--2 {
+      grid-column: span 6;
+    }
+
+    @include respond-to(lg) {
+      grid-column: span 6 !important;
+    }
+
+    @include respond-to(md) {
+      grid-column: span 12 !important;
+    }
+
+    &:hover .hero-showcase__img {
+      transform: scale(1.06);
+    }
+  }
+
+  &__img-wrap {
+    position: relative;
+    aspect-ratio: 16 / 11;
+    min-height: 240px;
+    overflow: hidden;
+  }
+
+  &__picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    @include cinematic-photo-grade;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.2rem;
+    background: linear-gradient(
+      to top,
+      rgba(6, 13, 9, 0.94) 0%,
+      rgba(6, 13, 9, 0.28) 52%,
+      transparent 100%
+    );
+  }
+
+  &__index {
+    align-self: flex-end;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background: rgba(8, 16, 12, 0.76);
+    border: 1px solid var(--border-gold);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--gold-bright);
+  }
+
+  &__loc {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold-primary);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  &__card-title {
+    font-size: clamp(0.95rem, 2vw, 1.06rem);
+    font-weight: 700;
+    color: var(--text-linen);
+    margin-top: 0.2rem;
+    line-height: 1.4;
+  }
+}
+
+// ==========================================================================
+// 8. FEATURED SEEDS SECTION (Shriram Super 303 Package & Bento Box)
+// ==========================================================================
+
+.seeds-section {
+  position: relative;
+  padding: clamp(4rem, 8vw, 7.5rem) 0;
+  background: radial-gradient(
+      circle at 85% 20%,
+      rgba(212, 168, 67, 0.12) 0%,
+      transparent 45%
+    ),
+    linear-gradient(180deg, var(--bg-obsidian) 0%, var(--bg-forest-deep) 50%, var(--bg-obsidian) 100%);
+  overflow: hidden;
+
+  &__wheat {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.18;
+
+    &--left {
+      top: 12%;
+      left: -45px;
+      width: 180px;
+    }
+
+    &--right {
+      bottom: 8%;
+      right: -35px;
+      width: 210px;
+    }
+
+    @include respond-to(md) {
+      opacity: 0.1;
+      width: 130px;
+    }
+
+    .wheat-svg {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 25px rgba(212, 168, 67, 0.35));
+    }
+  }
+
+  &__header {
+    position: relative;
+    z-index: 1;
+    max-width: 840px;
+    margin-bottom: 2.75rem;
+  }
+
+  &__header-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+  }
+
+  &__live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: rgba(181, 229, 80, 0.12);
+    border: 1px solid rgba(181, 229, 80, 0.35);
+    color: var(--lime-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    max-width: 100%;
+
+    @include respond-to(sm) {
+      border-radius: 12px;
+      font-size: 0.68rem;
+      white-space: normal;
+    }
+
+    .pulse-indicator {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime-accent);
+      animation: pulseRing 2s infinite;
+      flex-shrink: 0;
+    }
+  }
+
+  &__headline {
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 4vw, 3.45rem);
+    font-weight: 800;
+    line-height: 1.24;
+    margin-bottom: 1rem;
+  }
+
+  &__lead {
+    font-size: clamp(0.95rem, 1.15vw, 1.06rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+}
+
+// 12-Column Bento Grid
+.seeds-bento {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.35rem;
+}
+
+.bento-card {
+  @include bento-surface;
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.35rem, 3vw, 2.5rem);
+
+  // Flagship Shriram Super 303 Card
+  &--flagship {
+    grid-column: span 12;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.85fr);
+    gap: clamp(1.75rem, 3.5vw, 3rem);
+    align-items: center;
+    background: linear-gradient(
+      135deg,
+      rgba(27, 52, 38, 0.95) 0%,
+      rgba(14, 28, 20, 0.98) 60%,
+      rgba(38, 31, 14, 0.92) 100%
+    );
+    border: 1px solid rgba(212, 168, 67, 0.45);
+
+    @include respond-to(lg) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &--variety {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @include respond-to(lg) {
+      grid-column: span 6;
+    }
+
+    @include respond-to(md) {
+      grid-column: span 12;
+    }
+  }
+
+  &--advisory {
+    grid-column: span 12;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.35rem, 2.5vw, 1.85rem);
+    background: linear-gradient(90deg, rgba(212, 168, 67, 0.14), rgba(18, 35, 26, 0.9));
+    border: 1px solid var(--border-gold);
+
+    @include respond-to(md) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .advisory-cta,
+      .advisory-cta .magnetic-btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+
+  &--gold {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold-primary));
+    color: var(--text-dark);
+  }
+
+  &--dark {
+    background: rgba(8, 16, 12, 0.65);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+}
+
+.bento-flagship {
+  &__left {
+    min-width: 0;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  &__code {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--gold-primary);
+    line-height: 1.4;
+  }
+
+  &__name {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 3.2vw, 2.85rem);
+    color: var(--text-linen);
+    line-height: 1.24;
+    margin: 0.2rem 0 0.4rem;
+  }
+
+  &__tagline {
+    font-size: clamp(0.95rem, 1.5vw, 1.06rem);
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-bottom: 0.9rem;
+    line-height: 1.45;
+  }
+
+  &__desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.35rem;
+    line-height: 1.68;
+  }
+
+  &__features {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.2rem;
+    margin-bottom: 1.5rem;
+
+    @include respond-to(md) {
+      grid-template-columns: 1fr;
+    }
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.88rem;
+      color: var(--text-linen);
+      line-height: 1.5;
+
+      svg {
+        margin-top: 0.18rem;
+      }
+    }
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.65rem;
+
+    @include respond-to(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__cta-row {
+    @include respond-to(sm) {
+      .magnetic-btn {
+        width: 100%;
+      }
+    }
+  }
+
+  &__right {
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+// Official Shriram Super 303 Seed Package Showcase Card
+.seed-pack-showcase {
+  position: relative;
+  width: 100%;
+  max-width: 410px;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(
+      circle at 50% 42%,
+      rgba(212, 168, 67, 0.24) 0%,
+      rgba(12, 26, 18, 0.92) 72%
+    );
+  border: 1px solid rgba(212, 168, 67, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: inset 0 0 40px rgba(212, 168, 67, 0.08),
+    0 24px 50px -12px rgba(0, 0, 0, 0.65);
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: rgba(8, 16, 12, 0.82);
+    border: 1px solid var(--border-gold);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    color: var(--gold-bright);
+    margin-bottom: 1rem;
+  }
+
+  &__picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 290px;
+    margin: 0 auto 1rem;
+  }
+
+  &__img {
+    width: 100%;
+    height: auto;
+    max-height: 340px;
+    object-fit: contain;
+    filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.6));
+  }
+
+  &__caption {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+}
+
+.seed-metric-box {
+  padding: 0.9rem;
+  border-radius: var(--radius-md);
+  background: rgba(8, 16, 12, 0.68);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+
+  &__label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  &__value {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2vw, 1.45rem);
+    font-weight: 800;
+    color: var(--gold-bright);
+    line-height: 1.25;
+  }
+
+  &__unit {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+  }
+}
+
+// Companion Variety Cards (234, OP, Hybrid)
+.variety-card {
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  &__badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    color: var(--gold-bright);
+    padding: 0.3rem 0.68rem;
+    border-radius: var(--radius-pill);
+    background: rgba(212, 168, 67, 0.12);
+    border: 1px solid rgba(212, 168, 67, 0.25);
+  }
+
+  &__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--gold-primary);
+    flex-shrink: 0;
+  }
+
+  &__code {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  &__name {
+    font-family: var(--font-serif);
+    font-size: clamp(1.32rem, 2.2vw, 1.5rem);
+    color: var(--text-linen);
+    line-height: 1.3;
+    margin: 0.2rem 0 0.7rem;
+  }
+
+  &__highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    margin-bottom: 0.75rem;
+    line-height: 1.45;
+  }
+
+  &__desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.3rem;
+    line-height: 1.65;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border-radius: var(--radius-sm);
+    background: rgba(8, 16, 12, 0.55);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 1.1rem;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+}
+
+.variety-stat {
+  &__label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  &__val {
+    font-size: 0.92rem;
+    color: var(--text-linen);
+    line-height: 1.4;
+  }
+}
+
+.variety-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 0.26rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+}
+
+.advisory-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(212, 168, 67, 0.18);
+  color: var(--gold-bright);
+  flex-shrink: 0;
+}
+
+.advisory-content {
+  flex: 1;
+  min-width: 0;
+
+  h4 {
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.3rem;
+    line-height: 1.38;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: var(--text-linen);
+    line-height: 1.65;
+  }
+}
+
+// ==========================================================================
+// 9. AGRO PILLARS SECTION (Seeds, Pesticides, Fertilizers)
+// ==========================================================================
+
+.pillars-section {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: var(--bg-obsidian);
+
+  &__header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 3rem;
+  }
+
+  &__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.85rem, 3.6vw, 3.05rem);
+    margin: 0.8rem 0;
+    line-height: 1.28;
+  }
+
+  &__subtitle {
+    color: var(--text-secondary);
+    line-height: 1.68;
+  }
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pillar-card {
+  @include bento-surface;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.6rem;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__num {
+    font-family: var(--font-serif);
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: rgba(212, 168, 67, 0.35);
+    line-height: 1.1;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(212, 168, 67, 0.14);
+    border: 1px solid var(--border-gold);
+    color: var(--gold-bright);
+  }
+
+  &__sub {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+  }
+
+  &__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2.2vw, 1.55rem);
+    margin: 0.3rem 0 0.75rem;
+    line-height: 1.32;
+  }
+
+  &__desc {
+    color: var(--text-secondary);
+    font-size: 0.94rem;
+    line-height: 1.68;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  &__link {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border-gold);
+    color: var(--gold-bright);
+    flex-shrink: 0;
+    transition: background 0.25s ease, color 0.25s ease;
+
+    &:hover {
+      background: var(--gold-primary);
+      color: var(--text-dark);
+    }
+  }
+}
+
+.pillar-tag {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: rgba(212, 168, 67, 0.1);
+  color: var(--gold-bright);
+}
+
+// ==========================================================================
+// 10. FULL INTERACTIVE GALLERY SECTION & LIGHTBOX
+// ==========================================================================
+
+.gallery-section {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: linear-gradient(180deg, var(--bg-obsidian) 0%, var(--bg-forest-deep) 100%);
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  &__title-wrap {
+    max-width: 640px;
+  }
+
+  &__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.85rem, 3.6vw, 3rem);
+    margin: 0.7rem 0;
+    line-height: 1.28;
+  }
+
+  &__subtitle {
+    color: var(--text-secondary);
+    line-height: 1.68;
+  }
+}
+
+.gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.gallery-filter-btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  background: rgba(18, 35, 26, 0.75);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.25s ease;
+
+  &:hover {
+    color: var(--text-linen);
+    border-color: var(--border-gold);
+  }
+
+  &.is-active {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold-primary));
+    color: var(--text-dark);
+    border-color: transparent;
+  }
+}
+
+.gallery-masonry {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 310px;
+  gap: 1.25rem;
+
+  @include respond-to(lg) {
+    grid-auto-rows: 280px;
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  grid-column: span 4;
+
+  &--wide {
+    grid-column: span 6;
+  }
+
+  &--tall {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+
+  @include respond-to(lg) {
+    grid-column: span 6 !important;
+  }
+
+  @include respond-to(md) {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    aspect-ratio: 4 / 3;
+    min-height: 260px;
+  }
+
+  &__media {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    @include cinematic-photo-grade;
+  }
+
+  &:hover &__img {
+    transform: scale(1.06);
+  }
+
+  &__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(6, 13, 9, 0.94) 0%,
+      rgba(6, 13, 9, 0.25) 52%,
+      transparent 100%
+    );
+  }
+
+  &__zoom {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    @include glass-panel(rgba(8, 16, 12, 0.72), 12px);
+    color: var(--gold-bright);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.3s ease;
+  }
+
+  &:hover &__zoom {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &__caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.2rem;
+    z-index: 2;
+  }
+
+  &__loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  &__title {
+    font-size: clamp(0.95rem, 2vw, 1.04rem);
+    font-weight: 700;
+    color: var(--text-linen);
+    margin-top: 0.2rem;
+    line-height: 1.4;
+  }
+}
+
+// Lightbox Modal
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(5, 10, 7, 0.92);
+  backdrop-filter: blur(16px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+
+  &__dialog {
+    position: relative;
+    max-width: 980px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-gold);
+  }
+
+  &__close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 5;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(8, 16, 12, 0.85);
+    color: var(--text-linen);
+    border: 1px solid var(--border-gold);
+  }
+
+  &__img {
+    width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    background: #050a07;
+  }
+
+  &__info {
+    padding: 1.15rem 1.4rem;
+    border-top: 1px solid var(--border-subtle);
+
+    span {
+      display: block;
+      font-size: 0.74rem;
+      color: var(--gold-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    h3 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      margin-top: 0.2rem;
+      line-height: 1.38;
+    }
+  }
+}
+
+// ==========================================================================
+// 11. MONUMENTAL FOOTER & DIRECT PHONE CONTACT HUB
+// ==========================================================================
+
+.site-footer {
+  position: relative;
+  padding: clamp(4rem, 8vw, 7.5rem) 0 2.5rem;
+  background: radial-gradient(
+      circle at 50% 0%,
+      rgba(212, 168, 67, 0.16) 0%,
+      transparent 55%
+    ),
+    #060d09;
+  border-top: 1px solid var(--border-gold);
+  overflow: hidden;
+
+  &__hero {
+    text-align: center;
+    max-width: 1080px;
+    margin: 0 auto 3.5rem;
+    padding: 0 0.5rem;
+  }
+
+  &__display {
+    font-family: var(--font-serif);
+    font-size: clamp(2.15rem, 5.6vw, 5.1rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 1rem 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  &__sub {
+    font-size: clamp(0.95rem, 1.2vw, 1.06rem);
+    color: var(--text-secondary);
+    max-width: 62ch;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+
+    @include respond-to(lg) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  &__copy {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  &__top-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-gold);
+    color: var(--gold-bright);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: var(--gold-primary);
+      color: var(--text-dark);
+    }
+  }
+}
+
+.footer-card {
+  @include bento-surface;
+  padding: clamp(1.4rem, 3.2vw, 2.6rem);
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    line-height: 1.45;
+    text-transform: uppercase;
+    color: var(--gold-primary);
+    margin-bottom: 1rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.8rem;
+
+    @include respond-to(sm) {
+      flex-direction: column;
+
+      .magnetic-btn {
+        width: 100%;
+      }
+    }
+  }
+
+  &--details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+.footer-phone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.footer-phone-number {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 4.2vw, 2.75rem);
+  font-weight: 800;
+  color: var(--text-linen);
+  line-height: 1.25;
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: var(--gold-bright);
+  }
+
+  &--secondary {
+    font-size: clamp(1.25rem, 3.2vw, 2.1rem);
+    color: var(--text-secondary);
+  }
+}
+
+.footer-detail-block {
+  &__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--text-linen);
+    margin-bottom: 0.25rem;
+    line-height: 1.38;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+}
+
+.footer-map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--gold-bright);
+  font-weight: 600;
+  margin-top: 0.2rem;
+  transition: color 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    color: var(--text-linen);
+    text-decoration: underline;
+  }
+}
+
+.footer-affiliations {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  li {
+    font-size: 0.88rem;
+    color: var(--text-linen);
+    position: relative;
+    padding-left: 1rem;
+    line-height: 1.55;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--gold-primary);
+    }
+  }
+}

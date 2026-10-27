@@ -1,0 +1,57 @@
+// ==========================================================================
+// 2. REUSABLE MIXINS (Responsive, Glassmorphism, Cinematic Photo Grading)
+// ==========================================================================
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xl {
+    @media (max-width: 1280px) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: 1024px) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (max-width: 480px) {
+      @content;
+    }
+  }
+}
+
+@mixin glass-panel($bg: var(--bg-glass), $blur: 18px) {
+  background: $bg;
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid var(--border-subtle);
+}
+
+@mixin bento-surface {
+  background: linear-gradient(
+    145deg,
+    rgba(23, 45, 33, 0.88) 0%,
+    rgba(13, 26, 19, 0.94) 100%
+  );
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.4s var(--ease-out-expo),
+    box-shadow 0.4s var(--ease-out-expo);
+
+  &:hover {
+    border-color: var(--border-gold);
+    box-shadow: 0 28px 70px -12px rgba(0, 0, 0, 0.7),
+      0 0 40px -10px var(--gold-glow);
+  }
+}
+
+// Lando-Norris inspired editorial color grade on photographs
+@mixin cinematic-photo-grade {
+  filter: contrast(1.04) saturate(1.06) brightness(0.97);
+  transition: transform 0.85s var(--ease-out-expo),
+    filter 0.6s var(--ease-out-expo);
+  will-change: transform;
+}
